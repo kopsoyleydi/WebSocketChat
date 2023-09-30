@@ -1,29 +1,22 @@
-package com.example.strangerChat.api.domains;
+package com.example.strangerChat.api.dto;
 
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.io.Serializable;
 import java.time.Instant;
-import java.util.UUID;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Chat implements Serializable {
+public class MessageDTO {
 
+    String from;
 
-    @Builder.Default
-    String id = UUID.randomUUID().toString();
-
-    String name;
-
+    String message;
 
     @Builder.Default
     Instant createdAt = Instant.now();
-
-
 }
