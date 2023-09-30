@@ -4,6 +4,7 @@ package com.example.strangerChat.api.ws;
 import com.example.strangerChat.api.domains.Chat;
 import com.example.strangerChat.api.dto.ChatDTO;
 import com.example.strangerChat.api.dto.MessageDTO;
+import com.example.strangerChat.services.ParticipantService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -22,9 +23,13 @@ public class ChatWsController {
 
     SimpMessagingTemplate simpMessagingTemplate;
 
+    ParticipantService participantService;
+
     private static final String CREATE_CHAT = "/topic.chat.create";
 
-    private static final String FETCH_CREATE_CHAT_EVENT = "/topic.chat.create.event";
+    public static final String FETCH_DELETE_CHAT_EVENT = "/topic/chats.delete.event";
+
+    public static final String FETCH_CREATE_CHAT_EVENT = "/topic/chats.create.event";
 
     private static final String SEND_MESSAGES_TO_ALL = "/topic/chat.{chat_id}.messages";
 
@@ -95,15 +100,19 @@ public class ChatWsController {
     }
 
     @SubscribeMapping(FETCH_PERSONAL_MESSAGES)
-    public MessageDTO fetchPersonalMessages(){
+    public MessageDTO fetchPersonalMessages(@DestinationVariable("chat_id") String chatId,
+                                            @DestinationVariable("participant_id") String participantId,
+                                            @Header String sessionId){
+
+        participantService.handleJoinChat(sessionId, participantId, chatId);
         return null;
     }
 
-    public String getFetchMessagesDestination(String chatId){
+    public static String getFetchMessagesDestination(String chatId){
         return FETCH_MESSAGES.replace("{chat_id}", chatId);
     }
 
-    public String getFetchPersonalMessagesDestination(String chatId, String participantId){
+    public static String getFetchPersonalMessagesDestination(String chatId, String participantId){
         return FETCH_PERSONAL_MESSAGES
                 .replace("{chat_id}", chatId)
                 .replace("{participant_id}", participantId);

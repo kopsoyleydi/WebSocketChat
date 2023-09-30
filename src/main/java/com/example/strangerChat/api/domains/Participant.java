@@ -16,9 +16,11 @@ public class Participant implements Serializable {
 
     String sessionId;
 
-    String participantId;
+    String id;
 
     @Builder.Default
     Instant enterAt = Instant.now();
+
+    String chatId;
 
 }
